@@ -1,7 +1,7 @@
 -- Cleaning before running the script
-DROP DATABASE hr_block_sql_capstone_project;
-CREATE DATABASE hr_block_sql_capstone_project;
-USE hr_block_sql_capstone_project;
+DROP DATABASE IF EXISTS hr_block_sql_capstone_project;
+CREATE DATABASE IF NOT EXISTS hr_block_sql_capstone_project;
+USE IF EXISTS hr_block_sql_capstone_project;
 
 -- Create departments
 CREATE TABLE IF NOT EXISTS departments(  
