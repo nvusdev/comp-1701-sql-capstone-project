@@ -1,7 +1,8 @@
+-- Active: 1774622008260@@gondola.proxy.rlwy.net@30240@mysql
 -- Cleaning before running the script
 DROP DATABASE IF EXISTS hr_block_sql_capstone_project;
 CREATE DATABASE IF NOT EXISTS hr_block_sql_capstone_project;
-USE IF EXISTS hr_block_sql_capstone_project;
+USE hr_block_sql_capstone_project;
 
 -- Create departments
 CREATE TABLE IF NOT EXISTS departments(  
