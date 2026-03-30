@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS job_metadata(
     job_id INT NOT NULL,
     job_family_title_id TINYINT NOT NULL,
     department_id TINYINT NOT NULL,
-    division_id TINYINT NOT NULL,
+    division_id TINYINT,
     min_pay_per_hour DECIMAL(10,2),
     max_pay_per_hour DECIMAL(10,2),
     FOREIGN KEY (job_id) REFERENCES jobs(job_id),
