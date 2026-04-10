@@ -307,8 +307,8 @@ INSERT INTO jobs (job_id, job_title, level_id, job_description, min_years, union
 (97, 'Document Controller',               2,  'Manages document workflows and version control for capital projects.',                                                                 1,  1),
 (98, 'Privacy Officer',                   5,  'Oversees FOIP compliance and manages privacy breach responses.',                                                                       5,  9),
 (99, 'Equity Advisor',                    4,  'Provides guidance on equity, diversity, and inclusion policy.',                                                                         3,  12),
-(100,'Student Intern',                    1,  'Supports various departments on a short-term basis for practical learning.',                                                             0,  9);
-
+(100,'Student Intern',                    1,  'Supports various departments on a short-term basis for practical learning.',                                                             0,  9),
+(101, 'Chief Administrative Officer', 15, 'Serves as the top executive of the municipality, reporting to elected council.', 20, 9);
 -- ─────────────────────────────────────────────
 --  8. JOB_METADATA  (FK → jobs, job_family_titles, departments, divisions)
 -- ─────────────────────────────────────────────
@@ -412,7 +412,8 @@ INSERT INTO job_metadata (job_metadata_id, job_id, job_family_title_id, departme
 (97, 97, 18, 27, 53, 26.00,  38.00),
 (98, 98, 5,  21, 42, 52.00,  74.00),
 (99, 99, 12, 24, 47, 42.00,  62.00),
-(100,100,1,  1,  1,  17.00,  20.00);
+(100,100,1,  1,  1,  17.00,  20.00),
+(101, 101, 9, 1, NULL, 130.00, 180.00);
 
 -- ─────────────────────────────────────────────
 --  9. EMPLOYEES
@@ -517,30 +518,34 @@ INSERT INTO employees (employee_id, first_name, last_name, hire_date, phone_numb
 (97, 'Samir',     'El-Amin',      '2020-05-06', '204-555-0197', 'selamin@gov.mb.ca'),
 (98, 'Denise',    'Rourke',       '2013-04-14', '204-555-0198', 'drourke@gov.mb.ca'),
 (99, 'Tyrone',    'Pemberton',    '2011-07-31', '204-555-0199', 'tpemberton@gov.mb.ca'),
-(100,'Ingrid',    'Holm',         '2024-01-15', '204-555-0200', 'iholm@gov.mb.ca');
+(100,'Ingrid',    'Holm',         '2024-01-15', '204-555-0200', 'iholm@gov.mb.ca'),
+(101, 'Council', 'Appointed', '2020-01-01', '204-555-0201', 'cao@gov.mb.ca');
 
 -- ─────────────────────────────────────────────
 -- 10. JOB_SUPERVISORS  (PK: supervisor_id + is_supervising)
 --     Both columns reference employees.employee_id
 -- ─────────────────────────────────────────────
--- INSERT INTO job_supervisors (supervisor_id, is_supervising) VALUES
--- (7,  1),(7,  2),(7,  3),(7,  14),(7,  19),(7,  31),(7,  32),(7,  66),(7,  99),
--- (10, 4),(10, 5),(10, 6),(10, 8),(10, 9),(10, 53),(10, 67),(10, 68),(10, 69),
--- (18, 10),(18, 11),(18, 12),(18, 23),(18, 24),(18, 88),(18, 89),(18, 95),(18, 96),
--- (25, 13),(25, 15),(25, 63),(25, 74),(25, 75),(25, 86),(25, 87),
--- (35, 16),(35, 17),(35, 76),(35, 82),(35, 98),
--- (48, 18),(48, 19),(48, 20),(48, 65),(48, 57),(48, 93),
--- (15, 21),(15, 22),(15, 23),(15, 36),(15, 37),(15, 60),(15, 61),
--- (20, 25),(20, 26),(20, 62),(20, 77),(20, 94),
--- (28, 27),(28, 28),(28, 45),(28, 46),(28, 47),
--- (38, 29),(38, 30),(38, 56),(38, 79),(38, 97),
--- (7,  33),(7,  34),(7,  72),(7,  81),
--- (10, 35),(10, 70),(10, 71),(10, 73),(10, 90),
--- (18, 38),(18, 39),(18, 40),(18, 41),(18, 42),
--- (25, 43),(25, 44),(25, 78),(25, 91),(25, 92),
--- (35, 49),(35, 50),(35, 51),(35, 52),(35, 55),
--- (48, 54),(48, 58),(48, 59),(48, 83),(48, 84),
--- (15, 64),(15, 80),(15, 85),(15, 89),(15, 100);
+
+INSERT INTO job_supervisors (supervisor_id, is_supervising) VALUES
+(2,1),            
+(3,1),(3,2),      
+(4,1),(4,2),(4,3),
+(5,1),(5,2),(5,3),(5,4),
+(6,1),(6,2),(6,3),(6,4),(6,5),              
+(7,3),(7,4),(7,5),(7,6),                    
+(8,4),(8,5),(8,6),(8,7),                    
+(9,6),(9,7),(9,8),                          
+(10,7),(10,8),(10,9),                       
+(11,6),(11,7),(11,8),(11,9),(11,10),        
+(12,7),(12,8),(12,9),(12,10),(12,11),       
+(13,8),(13,9),(13,10),(13,11),(13,12),      
+(14,9),(14,10),(14,11),(14,12),(14,13),     
+(15,10),(15,11),(15,12),(15,13),(15,14),    
+(16,11),(16,12),(16,13),(16,14),(16,15),   
+(17,12),(17,13),(17,14),(17,15),(17,16), 
+(18,13),(18,14),(18,15),(18,16),(18,17), 
+(19,14),(19,15),(19,16),(19,17),(19,18),  
+(20,15),(20,16),(20,17),(20,18),(20,19);  
 
 -- ─────────────────────────────────────────────
 -- 11. EMPLOYEE_JOBS  (FK → employees, jobs, change_types)
@@ -657,7 +662,8 @@ INSERT INTO employee_jobs (employee_job_id, employee_id, job_id, pay_scale, chan
 (109, 97, 9,  40.00, 1,  '2020-05-06', NULL),
 (110, 98, 31, 46.00, 1,  '2013-04-14', NULL),
 (111, 99, 42, 66.00, 1,  '2011-07-31', NULL),
-(112, 100,1,  18.50, 1,  '2024-01-15', NULL);
+(112, 100,1,  18.50, 1,  '2024-01-15', NULL),
+(113, 101, 101, 130.00, 1, '2020-01-01', NULL);
 
 -- ─────────────────────────────────────────────
 -- 12. EMPLOYEE_PAYMENTS  (FK → employee_jobs)

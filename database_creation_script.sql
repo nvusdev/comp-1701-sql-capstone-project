@@ -1,4 +1,4 @@
--- Active: 1774622008260@@gondola.proxy.rlwy.net@30240@mysql
+-- Active: 1774622008260@@gondola.proxy.rlwy.net@30240@hr_block_sql_capstone_project
 -- Cleaning before running the script
 DROP DATABASE IF EXISTS hr_block_sql_capstone_project;
 CREATE DATABASE IF NOT EXISTS hr_block_sql_capstone_project;
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS job_family_titles(
 
 -- Create unions
 CREATE TABLE IF NOT EXISTS unions(  
-    union_id TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    union_id TINYINT NULL PRIMARY KEY AUTO_INCREMENT,
     union_name VARCHAR(100),
     union_description TEXT
 );
