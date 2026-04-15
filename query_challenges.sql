@@ -106,33 +106,6 @@ WHERE ej.change_type_id = (SELECT change_type_id FROM change_types WHERE change_
 GROUP BY e.employee_id
 HAVING COUNT(*) >= 2;
 
--- List all employees that report (directly or indirectly) to 'Inderjeet Singh', the current Director of IT.
-
-WITH RECURSIVE employee_tree AS (
-SELECT
-j.level_id
-FROM employees e
-JOIN employee_jobs ej ON e.employee_id = ej.employee_id
-JOIN jobs j ON ej.job_id = j.job_id
-WHERE j.job_title = "Director — IT"
-AND ej.end_date IS NULL
-UNION ALL
-SELECT js.is_supervising
-FROM job_supervisors js
-JOIN employee_tree et
-ON js.supervisor_id = et.level_id
-)
-SELECT DISTINCT
-e.first_name,
-e.last_name
-FROM employees e
-JOIN employee_jobs ej ON e.employee_id = ej.employee_id
-JOIN jobs j ON ej.job_id = j.job_id
-WHERE j.level_id IN (
-SELECT level_id FROM employee_tree
-)
-AND ej.end_date IS NULL;
-
 -- For Director of IT, list all his previous positions and the pay he was receiving on his last day in those positions.
 
 SELECT
