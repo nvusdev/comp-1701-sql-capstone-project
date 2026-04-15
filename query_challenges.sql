@@ -22,11 +22,16 @@ SELECT
     dv.division_name,
     j.job_title
 FROM employees e
-JOIN employee_jobs ej ON e.employee_id = ej.employee_id
-JOIN jobs j ON ej.job_id = j.job_id
-JOIN job_metadata jm ON j.job_id = jm.job_id
-JOIN departments d ON jm.department_id = d.department_id
-LEFT JOIN divisions dv ON jm.division_id = dv.division_id
+JOIN employee_jobs ej 
+    ON e.employee_id = ej.employee_id
+JOIN jobs j 
+    ON ej.job_id = j.job_id
+JOIN job_metadata jm
+    ON j.job_id = jm.job_id
+JOIN departments d 
+    ON jm.department_id = d.department_id
+LEFT JOIN divisions dv 
+    ON jm.division_id = dv.division_id
 WHERE ej.end_date IS NULL
 AND d.department_name = 'Information Technology'
 ORDER BY employee_name;
@@ -34,12 +39,23 @@ ORDER BY employee_name;
 -- Show the complete organizational structure of Finance – list each position and to whom it reports (if any).
 
 SELECT j.job_title AS position,
-s.supervisor_id AS reports_to
+    j.level_id as job_level_id,
+    sj.job_title AS reports_to,
+    sj.level_id as supervisor_level_id
 FROM jobs j
-LEFT JOIN job_supervisors s ON j.job_id = s.supervisor_id
-JOIN job_metadata jm ON j.job_id = jm.job_id
-WHERE jm.department_id = (SELECT department_id FROM departments WHERE department_name = 'Finance')
-ORDER BY position;
+JOIN job_metadata jm 
+    ON j.job_id = jm.job_id 
+    AND jm.department_id = (
+    SELECT department_id
+    FROM departments
+    WHERE department_name = 'Finance'
+)
+JOIN job_supervisors js ON j.level_id = js.is_supervising
+JOIN jobs sj ON js.supervisor_id = sj.level_id
+
+-- check level hierarchy:
+SELECT * FROM job_supervisors
+WHERE is_supervising = 3;
 
 -- Among all employees who have never changed position, find who has worked the longest.
 
@@ -56,8 +72,16 @@ LIMIT 1;
 
 -- Calculate the current pay of 'Sarah Johnson', factoring in her years of service and the pay rules of her current position.
 
-SELECT * FROM employees
-WHERE first_name = 'Sarah';
+SELECT
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    j.job_title,
+    ej.pay_scale,
+    ej.start_date,
+    ej.end_date
+FROM employees e
+JOIN employee_jobs ej ON e.employee_id = ej.employee_id
+JOIN jobs j ON ej.job_id = j.job_id
+WHERE e.first_name = 'Isabelle' AND e.last_name = 'Fontaine';
 
 -- Find all vacant positions (positions with no one assigned to them).
 
@@ -84,26 +108,50 @@ HAVING COUNT(*) >= 2;
 
 -- List all employees that report (directly or indirectly) to 'Inderjeet Singh', the current Director of IT.
 
-
-
--- Where employee_id = (
---     select e.employee_id
---     from employees e
---     join employee_jobs ej on e.employee_id = ej.employee_id
---     join jobs j on ej.job_id = j.job_id
---     where j.job_title = 'Director — IT'
--- )
+WITH RECURSIVE employee_tree AS (
+SELECT
+j.level_id
+FROM employees e
+JOIN employee_jobs ej ON e.employee_id = ej.employee_id
+JOIN jobs j ON ej.job_id = j.job_id
+WHERE j.job_title = "Director — IT"
+AND ej.end_date IS NULL
+UNION ALL
+SELECT js.is_supervising
+FROM job_supervisors js
+JOIN employee_tree et
+ON js.supervisor_id = et.level_id
+)
+SELECT DISTINCT
+e.first_name,
+e.last_name
+FROM employees e
+JOIN employee_jobs ej ON e.employee_id = ej.employee_id
+JOIN jobs j ON ej.job_id = j.job_id
+WHERE j.level_id IN (
+SELECT level_id FROM employee_tree
+)
+AND ej.end_date IS NULL;
 
 -- For Director of IT, list all his previous positions and the pay he was receiving on his last day in those positions.
 
-SELECT CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
-e.employee_id,
+SELECT
+CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
 j.job_title,
 ej.pay_scale,
 ej.end_date
 FROM employees e
 JOIN employee_jobs ej ON e.employee_id = ej.employee_id
-JOIN jobs j ON ej.job_id = j.job_id -- works
+JOIN jobs j ON ej.job_id = j.job_id
+WHERE e.employee_id = (
+SELECT ej2.employee_id
+FROM employee_jobs ej2
+JOIN jobs j2 ON ej2.job_id = j2.job_id
+WHERE j2.job_title LIKE '%Director%IT%'
+    AND ej2.end_date IS NULL
+)
+AND ej.end_date IS NOT NULL
+ORDER BY ej.start_date;
 
 -- Group employees by their union (or lack thereof) and list the results in descending order of count.
 
