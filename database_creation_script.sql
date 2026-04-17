@@ -6,15 +6,15 @@ USE hr_block_sql_capstone_project;
 
 -- Create departments
 CREATE TABLE IF NOT EXISTS departments(  
-    department_id TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    department_id TINYINT PRIMARY KEY AUTO_INCREMENT,
     department_name VARCHAR(100),
     department_description TEXT,
-    category tinytext
+    category TINYTEXT
 );
 
 -- Create divisions
 CREATE TABLE IF NOT EXISTS divisions(  
-    division_id TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    division_id TINYINT PRIMARY KEY AUTO_INCREMENT,
     division_name VARCHAR(100),
     division_description TEXT,
     department_id TINYINT,
@@ -23,39 +23,39 @@ CREATE TABLE IF NOT EXISTS divisions(
 
 -- Create job_family_titles
 CREATE TABLE IF NOT EXISTS job_family_titles(  
-    job_family_title_id TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    job_family_title_id TINYINT PRIMARY KEY AUTO_INCREMENT,
     job_family_title_name VARCHAR(50),
     job_family_title_description TEXT
 );
 
 -- Create unions
 CREATE TABLE IF NOT EXISTS unions(  
-    union_id TINYINT NULL PRIMARY KEY AUTO_INCREMENT,
+    union_id TINYINT PRIMARY KEY AUTO_INCREMENT,
     union_name VARCHAR(100),
     union_description TEXT
 );
 
 -- Create levels
 CREATE TABLE IF NOT EXISTS levels(  
-    level_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    level_id INT PRIMARY KEY AUTO_INCREMENT,
     level_name VARCHAR(3),
-    min_count TINYINT NULL
+    min_count TINYINT
 );
 
 -- Create job_supervisors
 CREATE TABLE IF NOT EXISTS job_supervisors(  
-    supervisor_id INT NOT NULL,
-    is_supervising int NOT NULL,
+    supervisor_id INT,
+    is_supervising INT,
     FOREIGN KEY (supervisor_id) REFERENCES levels(level_id),
     FOREIGN KEY (is_supervising) REFERENCES levels(level_id)
 );
 
 -- Create jobs
 CREATE TABLE IF NOT EXISTS jobs(  
-    job_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    job_id INT PRIMARY KEY AUTO_INCREMENT,
     job_title VARCHAR(50),
     job_description TEXT,
-    level_id INT,
+    level_id INT NOT NULL,
     min_years TINYINT,
     union_id TINYINT,
     FOREIGN KEY (union_id) REFERENCES unions(union_id),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS jobs(
 
 -- Create job_metadata
 CREATE TABLE IF NOT EXISTS job_metadata(  
-    job_metadata_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    job_metadata_id INT PRIMARY KEY AUTO_INCREMENT,
     job_id INT NOT NULL,
     job_family_title_id TINYINT NOT NULL,
     department_id TINYINT NOT NULL,
@@ -89,13 +89,13 @@ CREATE TABLE IF NOT EXISTS employees(
 
 -- Create change_types
 CREATE TABLE IF NOT EXISTS change_types(  
-    change_type_id TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    change_type_id TINYINT PRIMARY KEY AUTO_INCREMENT,
     change_type_name TINYTEXT
 );
 
 -- Create employee_jobs
 CREATE TABLE IF NOT EXISTS employee_jobs(  
-    employee_job_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    employee_job_id INT PRIMARY KEY AUTO_INCREMENT,
     employee_id INT,
     job_id INT,
     pay_scale DECIMAL(10,2),

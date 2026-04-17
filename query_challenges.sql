@@ -70,7 +70,7 @@ ORDER BY e.hire_date ASC
 LIMIT 1;
 
 
--- Calculate the current pay of 'Sarah Johnson', factoring in her years of service and the pay rules of her current position.
+-- Calculate the current pay of 'Isabelle Fontaine', factoring in her years of service and the pay rules of her current position.
 
 SELECT
     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
@@ -102,7 +102,9 @@ SELECT
 FROM employees e
 JOIN employee_jobs ej
     ON e.employee_id = ej.employee_id
-WHERE ej.change_type_id = (SELECT change_type_id FROM change_types WHERE change_type_name = 'Promotion')
+JOIN change_types ct
+    ON ej.change_type_id = ct.change_type_id
+WHERE ct.change_type_name = 'Promotion'
 GROUP BY e.employee_id
 HAVING COUNT(*) >= 2;
 
@@ -120,7 +122,7 @@ WHERE e.employee_id = (
 SELECT ej2.employee_id
 FROM employee_jobs ej2
 JOIN jobs j2 ON ej2.job_id = j2.job_id
-WHERE j2.job_title LIKE '%Director%IT%'
+WHERE j2.job_title LIKE "Director%IT"
     AND ej2.end_date IS NULL
 )
 AND ej.end_date IS NOT NULL
